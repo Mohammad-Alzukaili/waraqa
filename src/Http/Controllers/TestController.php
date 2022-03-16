@@ -3,7 +3,7 @@ namespace Mawdoo3\Waraqa\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
-class ArticlesController extends Controller
+class TestController extends Controller
 {
 
 
