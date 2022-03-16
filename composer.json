@@ -9,7 +9,7 @@
             "email": "mohammad.alzukaili@mawdoo3.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Mawdoo3\\Waraqa\\": "src/"
