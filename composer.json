@@ -20,6 +20,7 @@
         "gumlet/php-image-resize": "1.9.*",
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.5",
+        "laravel/lumen-framework": "5.8.*",
         "mawdoo3com/waraqa-integration": "^2.0"
     },
     "config": {
