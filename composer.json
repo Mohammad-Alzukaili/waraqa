@@ -26,7 +26,6 @@
         "preferred-install": "dist",
         "platform-check": false
     },
-    "minimum-stability": "dev",
     "extra": {
         "laravel": {
             "providers": [
