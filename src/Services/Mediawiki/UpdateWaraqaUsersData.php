@@ -316,12 +316,12 @@ class UpdateWaraqaUsersData {
     private function uploadToS3($file = '', $path = '', $bucket = '')
     {
         $client = S3Client::factory(array(
-            'key' => Config('AWS_ACCESS_ID'),
-            'secret' => Config('AWS_ACCESS_KEY'),
+            'key' => Config('waragaIntegration.AWS_ACCESS_ID'),
+            'secret' => Config('waragaIntegration.AWS_ACCESS_KEY'),
         ));
         try {
             $client->putObject(array(
-                'Bucket' => empty($bucket) ? Config('S3_BUCKET') : $bucket,
+                'Bucket' => empty($bucket) ? Config('waragaIntegration.S3_BUCKET') : $bucket,
                 'Key' => $path,
                 'SourceFile' => $file,
                 'ACL' => 'public-read'

@@ -35,7 +35,7 @@ public static function newFromRow($row){
 static function  store($data){
     //insert user to db
     $user = MediaWikiUser::create(
-        [           'user_id' => config('waragaIntegration.WARAQA_USER_ID'), //next id
+        [           'user_id' => Config('waragaIntegration.WARAQA_USER_ID'), //next id
                     'user_name' => $data['user_name'],
                     'user_password' => ':A:7ba14fad98ebd764a5cd9d6b4df579fd',
                     'user_newpassword' => '',
