@@ -21,7 +21,8 @@
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.5",
         "laravel/lumen-framework": "5.8.*",
-        "mawdoo3com/waraqa-integration": "^2.0"
+        "mawdoo3com/waraqa-integration": "^2.0",
+        "laravelista/lumen-vendor-publish":"5.8"
     },
     "config": {
         "preferred-install": "dist",
