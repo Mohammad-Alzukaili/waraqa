@@ -14,5 +14,6 @@ return [
     'S3_BUCKET' => env('S3_BUCKET'),
     'MEDIAWIKI_PARSER_API' => env('MEDIAWIKI_PARSER_API'),
     'AQMP_CONNECTION' => env('AQMP_CONNECTION'),
-    'IMAGE_SIZES' => env('IMAGE_SIZES')
+    'IMAGE_SIZES' => env('IMAGE_SIZES'),
+    'FULL_SERVER_URL' => env('FULL_SERVER_URL')
 ];

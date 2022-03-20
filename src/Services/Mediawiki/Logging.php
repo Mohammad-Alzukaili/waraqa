@@ -16,7 +16,7 @@ class Logging
      */
     public static function logStore($page,$user)
     {
-        $logparams = '<a href="'. $_SERVER['FULL_SERVER_URL'] . 'index.php?title=' . $page->title . '&amp;oldid=' . $page->page_latest .'">'.$page->page_latest.'</a>';
+        $logparams = '<a href="'. Config('FULL_SERVER_URL') . 'index.php?title=' . $page->title . '&amp;oldid=' . $page->page_latest .'">'.$page->page_latest.'</a>';
         if (!empty($page)){
             $data = [
                 'log_type' => 'approval',
