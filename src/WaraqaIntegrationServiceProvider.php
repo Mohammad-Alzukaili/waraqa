@@ -33,6 +33,8 @@ class WaraqaIntegrationServiceProvider extends ServiceProvider
                 \Laravelista\LumenVendorPublish\VendorPublishCommand::class
             ]);
         }
+
+        app()->configure('waragaIntegration');
     }
 
 

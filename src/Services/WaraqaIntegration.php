@@ -33,7 +33,7 @@ class WaraqaIntegration extends Consumer
         $this->waraqaUrl = Config('waragaIntegration.WARAQA_URL');
         $this->clientAccessId = Config('waragaIntegration.CLIENT_ACCESS_ID');
         $this->clientPassword = Config('waragaIntegration.CLIENT_PASSWORD');
-        $this->mediaWikiParserApi = Config('mediaWikiIntegration.MEDIAWIKI_PARSER_API');
+        $this->mediaWikiParserApi = Config('waragaIntegration.MEDIAWIKI_PARSER_API');
     }
 
 
