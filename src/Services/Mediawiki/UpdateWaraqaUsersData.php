@@ -275,27 +275,6 @@ class UpdateWaraqaUsersData {
     }
 
 
-    // private function optimizeImage($url, $newFile)
-    // {
-    //     $this->getImage($url, $newFile);
-    //     return;
-    //     \Tinify\setKey("xf51P7w0GVltZCtStg7BJwnfbZRlZNC4");
-    //     $source = \Tinify\fromFile($url);
-    //     $resized = $source->resize(array(
-    //         "method" => "fit",
-    //         "width" => 120,
-    //         "height" => 120
-    //     ));
-    //     $resized->store(array(
-    //         "service" => "s3",
-    //         "aws_access_key_id" => $this->getParameterFromEnv('AWS_ACCESS_ID'),
-    //         "aws_secret_access_key" => $this->getParameterFromEnv('AWS_ACCESS_KEY'),
-    //         "region" => "us-west-1",
-    //         "headers" => array("Cache-Control" => "max-age=31536000, public"),
-    //         "path" => $this->getParameterFromEnv('S3_BUCKET') . "/profiles/$newFile"
-    //     ));
-    // }
-
     private function optimizeImage($url, $newFile, $isBase64) //todo
     {
         $this->logger->debug('optimizing user image');
@@ -337,12 +316,12 @@ class UpdateWaraqaUsersData {
     private function uploadToS3($file = '', $path = '', $bucket = '')
     {
         $client = S3Client::factory(array(
-            'key' => $this->getParameterFromEnv('AWS_ACCESS_ID'),
-            'secret' => $this->getParameterFromEnv('AWS_ACCESS_KEY'),
+            'key' => Config('AWS_ACCESS_ID'),
+            'secret' => Config('AWS_ACCESS_KEY'),
         ));
         try {
             $client->putObject(array(
-                'Bucket' => empty($bucket) ? $this->getParameterFromEnv('S3_BUCKET') : $bucket,
+                'Bucket' => empty($bucket) ? Config('S3_BUCKET') : $bucket,
                 'Key' => $path,
                 'SourceFile' => $file,
                 'ACL' => 'public-read'

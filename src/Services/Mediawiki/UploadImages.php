@@ -25,7 +25,7 @@ class UploadImages
         $ext = 'jpg';
         $imageContent = base64_decode($image_base64);
         list($time, $newFilename) = self::prepareFileToUpload($page->page_id, $ext, $imageContent);
-        $imageSizes = env('IMAGE_SIZES');
+        $imageSizes = Config('IMAGE_SIZES');
         $mainImageName = '/tmp/origins/' . $newFilename;
 
         foreach (json_decode($imageSizes) as $imageSize) {
@@ -95,7 +95,7 @@ class UploadImages
         ArticlePicture::where('isthumb', 1)->where('article_id', $articleId)->update(['isthumb' => 0]);
 
         ArticlePicture::create([
-            'user_id' => env('WARAQA_USER_ID'),
+            'user_id' => Config('WARAQA_USER_ID'),
             'article_id' => $articleId,
             'pic' => $newFilename,
             'isthumb' => $isThumb,
