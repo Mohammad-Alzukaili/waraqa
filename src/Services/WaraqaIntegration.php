@@ -77,45 +77,6 @@ class WaraqaIntegration extends Consumer
         }
     }
 
-    /**
-     * @param $article
-     * @param $articleHtml
-     * @return void
-     */
-    public function processArticleTest($article, $articleHtml)
-    {
-
-        $this->articleRequest = new Article($this->waraqaUrl, $this->clientAccessId, $this->clientPassword);
-        $this->waraqaUrl = Config('waragaIntegration.WARAQA_URL');
-        $this->clientAccessId = Config('waragaIntegration.CLIENT_ACCESS_ID');
-        $this->clientPassword = Config('waragaIntegration.CLIENT_PASSWORD');
-        $this->mediaWikiParserApi = Config('waragaIntegration.MEDIAWIKI_PARSER_API');
-        try {
-
-            $url = $this->mediaWikiParserApi;
-
-            $html = $this->strip_tags_content($articleHtml, "<colgroup>", true);
-            $html = str_replace(array("\n", "\r", '</em>', '<em>', '<nowiki>', '</nowiki>', '</colgroup>', '<col width="100">', '<colgroup>'), '', $html);
-            $html = str_replace('style="width', 'style="1width', $html);
-            $params = [
-                "html" => $html
-            ];
-
-            $htmlBody = $this->MwCURL($url, $params);
-            $htmlBody = str_replace(array('<pre>', '</pre>', '</em>', '<em>', '<nowiki>', '</nowiki>'), '', $htmlBody);
-
-            if ($article->type == 'إثراء') {
-                $this->checkUpdateEnrich($article, $htmlBody);
-            } else {
-                $this->createPage($article, $htmlBody);
-            }
-        } catch (\Exception $ex) {
-            echo $ex->getMessage();
-            Log::error($ex->getMessage());
-        }
-
-    }
-
     public function processArticle($articleId)
     {
         try {
@@ -147,7 +108,6 @@ class WaraqaIntegration extends Consumer
 
 
         $messageBody = json_decode($message->body, true);
-        // $this->logger->info('== AMQPMessage ==' , $messageBody);
         if (!is_null($messageBody) && $messageBody['job'] == 'newarticle') {
             try {
                 $this->articleRequest = new Article($this->waraqaUrl, $this->clientAccessId, $this->clientPassword);
@@ -173,7 +133,7 @@ class WaraqaIntegration extends Consumer
                 $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
             } catch (\Exception $ex) {
                 // $this->logger->error('== Exception basic_reject ==' , [$messageBody , $ex->getMessage()] );
-                // \Log::error($ex->getMessage() . ", Line: " . __LINE__ . "\n", __DIR__ . "/waraqaErrors.log");
+                echo __CLASS__.":".__FUNCTION__.":".$ex->getMessage()."\n";
                 $message->delivery_info['channel']->basic_reject($message->delivery_info['delivery_tag'], false);
             }
         } else {

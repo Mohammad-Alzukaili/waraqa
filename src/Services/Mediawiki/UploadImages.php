@@ -2,9 +2,11 @@
 
 namespace Mawdoo3\Waraqa\Services\Mediawiki;
 
+use Exception;
 use Mawdoo3\Waraqa\Models\ArticlePicture;
 use Gumlet\ImageResize;
 use Gumlet\ImageResizeException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class UploadImages
@@ -21,28 +23,32 @@ class UploadImages
         if (empty($image_base64)) {
             return;
         }
+        try{
+            $ext = 'jpg';
+            $imageContent = base64_decode($image_base64);
+            list($time, $newFilename) = self::prepareFileToUpload($page->page_id, $ext, $imageContent);
+            $imageSizes = Config('waragaIntegration.IMAGE_SIZES');
+            $mainImageName = '/tmp/origins/' . $newFilename;
 
-        $ext = 'jpg';
-        $imageContent = base64_decode($image_base64);
-        list($time, $newFilename) = self::prepareFileToUpload($page->page_id, $ext, $imageContent);
-        $imageSizes = Config('waragaIntegration.IMAGE_SIZES');
-        $mainImageName = '/tmp/origins/' . $newFilename;
+            foreach (json_decode($imageSizes) as $imageSize) {
+                $imageTempName = '/tmp/origins/thumbs/fit' . $imageSize[0] . 'x' . $imageSize[1] . '_' . $newFilename;
+                $image = new ImageResize($mainImageName);
+                $image->resize($imageSize[0], $imageSize[1], true);
+                $imageTempContain = $image->save($imageTempName);
 
-        foreach (json_decode($imageSizes) as $imageSize) {
-            $imageTempName = '/tmp/origins/thumbs/fit' . $imageSize[0] . 'x' . $imageSize[1] . '_' . $newFilename;
-            $image = new ImageResize($mainImageName);
-            $image->resize($imageSize[0], $imageSize[1], true);
-            $imageTempContain = $image->save($imageTempName);
+                $path = 'thumbs/fit' . $imageSize[0] . 'x' . $imageSize[1] . '/' . $newFilename;
 
-            $path = 'thumbs/fit' . $imageSize[0] . 'x' . $imageSize[1] . '/' . $newFilename;
+                Storage::disk('s3')->put($path, $imageTempContain, 'public');
 
-            Storage::disk('s3')->put($path, $imageTempContain, 'public');
+                unlink($imageTempName);
+            }
 
-            unlink($imageTempName);
+            unlink('/tmp/origins/' . $newFilename);
+            self::updateArticleImageInfo($page->page_id, $page->page_title, $time, $newFilename, $ext);
+        }catch(Exception $ex){
+            echo "Error : ".$ex->getMessage()."\n\n";
+            Log::error(__CLASS__.":".__FUNCTION__.":".$ex->getMessage());
         }
-
-        unlink('/tmp/origins/' . $newFilename);
-        self::updateArticleImageInfo($page->page_id, $page->page_title, $time, $newFilename, $ext);
     }
 
     /**
