@@ -25,18 +25,20 @@ class WaraqaIntegrationServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__."/routes/web.php");
-        // $this->loadViewsFrom(__DIR__."/views/");
-        // $this->loadMigrationsFrom(__DIR__."/database/migrations");
-        // $this->mergeConfigFrom(__DIR__."/config/sp_mawdoo3_laravel.php",'search');
-        $this->publishes([__DIR__.'/config/awsIntegration.php'  => config_path('awsIntegration.php')],'config');
-        $this->publishes([__DIR__.'/config/mediaWikiIntegration.php'  => config_path('mediaWikiIntegration.php')],'config');
-        $this->publishes([__DIR__.'/config/waragaIntegration.php'  => config_path('waragaIntegration.php')],'config');
+        $this->publishes([__DIR__.'/config/waragaIntegration.php'  => $this->config_path('waragaIntegration.php')],'config');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
                 WaraqaIntegrationCommand::class,
+                \Laravelista\LumenVendorPublish\VendorPublishCommand::class
             ]);
         }
+    }
+
+
+    function config_path($path = '')
+    {
+        return app()->basePath() . '/config' . ($path ? '/' . $path : $path);
     }
 }
 
