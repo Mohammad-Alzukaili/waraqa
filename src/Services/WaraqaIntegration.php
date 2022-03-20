@@ -185,6 +185,7 @@ class WaraqaIntegration extends Consumer
 
     public function checkUpdateEnrich($article, $htmlBody)
     {
+        echo "Start process ....\n";
         //handle article slug from title if not exist
         $articleSlug = !empty($article->title) ? str_replace(' ', '_', ucfirst(trim($article->title))) : $article->slug;
 
@@ -206,7 +207,9 @@ class WaraqaIntegration extends Consumer
 
         try {
             //check if page is exist or not
+            echo "Start checking or create page .... \n";
             $page = WikiPage::getOrCreate($articleSlug, $article->id);
+            echo "Get or create user \n";
             $user = MediaWikiUser::where('user_id', Config('waragaIntegration.WARAQA_USER_ID'))->first();
 
             //check if this user is exist or not
@@ -216,10 +219,12 @@ class WaraqaIntegration extends Consumer
                     'user_name' => 'Waraqa User',
                     'user_real_name' => 'Waraqa User',
                 ];
+                echo "create user .... \n";
                 $user = User::store($userData);
             }
 
             if (is_array($article->main_category) && sizeof($article->main_category) > 0 && isset($article->main_category[0]->name) && !empty($article->main_category[0]->name)) {
+                echo "check categories .... \n";
                 CategoryLinksPrepare::store($page, $article->main_category, $article->sub_category);
             }
 
@@ -235,24 +240,28 @@ class WaraqaIntegration extends Consumer
              * Change an existing article or create a new article. Updates RC and all necessary caches,
              * optionally via the deferred update array.
              */
+            echo "Start edit or create page relations (revisions , text , links) ...... \n";
             $content = WikiPage::doEditContent(
                 $page->page_id, //page_id
                 $user->user_id,
                 $text
             );
 
-
+            echo "Upload image ...... \n";
             UploadImages::getImage($article->feature_image->content_base64, $page);
 
             $page = Page::where("page_id", $page->page_id)->first();
 
+            echo "Insert Waarqa user ...... \n";
             User::insertWaraqaUser($article, $page);
             Searchindex::update($page->page_id, $page->page_title, $content->old_text); //insert Searchindex when schedule_publish_date
 
             if (!empty($article->schedule_publish_date)) {
+                echo "Publishing article  ...... \n";
                 $this->articleRequest->publishArticle($article->id);
                 $page = Page::where('page_id', $page->page_id)->first();
                 ApprovedRevisions::setApprovedRevID($page);
+                echo "Logging  ...... \n";
                 Logging::logStore($page, $user);
             }
 
