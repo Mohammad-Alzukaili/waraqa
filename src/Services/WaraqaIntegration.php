@@ -66,9 +66,9 @@ class WaraqaIntegration extends Consumer
     public function execute()
     {   try{
 
-            $client_id = 'waraqa-client-' . env('CLIENT_ID');
+            $client_id = 'waraqa-client-' . Config('waragaIntegration.CLIENT_ID');
             echo $client_id . PHP_EOL;
-            $connection_obj = new WAMQPConnect(env('AQMP_CONNECTION'), $client_id, '/etc/ssl/certs', $client_id);
+            $connection_obj = new WAMQPConnect(Config('waragaIntegration.AQMP_CONNECTION'), $client_id, '/etc/ssl/certs', $client_id);
             $connection = $connection_obj->connect();
             $this->consume($connection, [$this, 'process']);
         }catch(Exception $ex){
@@ -86,10 +86,10 @@ class WaraqaIntegration extends Consumer
     {
 
         $this->articleRequest = new Article($this->waraqaUrl, $this->clientAccessId, $this->clientPassword);
-        $this->waraqaUrl = env('WARAQA_URL');
-        $this->clientAccessId = env('CLIENT_ACCESS_ID');
-        $this->clientPassword = env('CLIENT_PASSWORD');
-        $this->mediaWikiParserApi = env('MEDIAWIKI_PARSER_API');
+        $this->waraqaUrl = Config('waragaIntegration.WARAQA_URL');
+        $this->clientAccessId = Config('waragaIntegration.CLIENT_ACCESS_ID');
+        $this->clientPassword = Config('waragaIntegration.CLIENT_PASSWORD');
+        $this->mediaWikiParserApi = Config('waragaIntegration.MEDIAWIKI_PARSER_API');
         try {
 
             $url = $this->mediaWikiParserApi;
@@ -207,7 +207,7 @@ class WaraqaIntegration extends Consumer
         try {
             //check if page is exist or not
             $page = WikiPage::getOrCreate($articleSlug, $article->id);
-            $user = MediaWikiUser::where('user_id', env('WARAQA_USER_ID'))->first();
+            $user = MediaWikiUser::where('user_id', Config('waragaIntegration.WARAQA_USER_ID'))->first();
 
             //check if this user is exist or not
             // @TODO: if Waraqa-User Not exist make the correct user data for all table?!
