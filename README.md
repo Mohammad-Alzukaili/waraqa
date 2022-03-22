@@ -2,7 +2,7 @@
 
 ### **HOW TO INSTALL** :
 #### 1- Run this command ,then install the package
-      composer require  mawdoo3-zukaili/waraqa
+      composer require  mawdoo3-team/waraqa
 
 #### 2- Add WaraqaIntegrationServiceProvider to bootstrap/app.php file
       $app->register(WaraqaIntegrationServiceProvider::class);
